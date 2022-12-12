@@ -1,0 +1,27 @@
+name: Merge All
+
+on:
+  push: 
+    branches:
+      - daily
+  workflow_dispatch: 
+
+jobs:
+  merge_all_ip:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+      - name: Type All
+        run: |
+          git clone -b daily https://github.com/ip-scanner/cloudflare
+          cat cloudflare/*.txt > _all.txt
+          rm -rf cloudflare
+      - name: Commit & Push changes
+        uses: actions-js/push@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: master
+          author_name: ip-scanner-all
+          author_email: ip-scanner-all@freev2.ml
+          message: 'Update: Merge All from Origin'
